@@ -33,6 +33,7 @@ def getHourlyTempAndDownfallForStation(stations: list, start=None, end=None, ins
     df.index = pd.DatetimeIndex(df.YYYYMMDD)
     df = df.drop(columns=['YYYYMMDD', 'HH'])
     df['T'] = df['T'].apply(lambda x: x * 0.1)
+    df['T'] = df['T'].map('{:,.1f}'.format)
     df['DR'] = df['DR'].apply(lambda x: x * 6)
 
     return disclaimer, stations, legend, df
