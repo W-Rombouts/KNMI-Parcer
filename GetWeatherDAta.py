@@ -1,11 +1,18 @@
 import knmi
+import json
 import pandas as pd
 import requests
 from knmi.parsers import parse_day_data, parse_dataframe, parse_forecast_data
 
+file = open("datetime.json", "r")
+test = file.read()
+file.close()
 
-def getHourlyTempAndDownfallForStation(stations: list, start=None, end=None, inseason=False):
-    variables = ['T', 'DR']
+requiredTimes = json.loads(test)
+
+
+def getHourlyTempAndDownfallForStation(stations: list, start="2019063000", end="2019123123", inseason=False):
+    variables = ["ALL"]
     url = "http://projects.knmi.nl/klimatologie/uurgegevens/getdata_uur.cgi"
     params = {
         "stns": ":".join(str(station) for station in stations),
@@ -32,16 +39,27 @@ def getHourlyTempAndDownfallForStation(stations: list, start=None, end=None, ins
     df['YYYYMMDD'] += pd.to_timedelta(df.HH, unit='h')
     df.index = pd.DatetimeIndex(df.YYYYMMDD)
     df = df.drop(columns=['YYYYMMDD', 'HH'])
-    df['T'] = df['T'].apply(lambda x: x * 0.1)
-    df['T'] = df['T'].map('{:,.1f}'.format)
-    df['DR'] = df['DR'].apply(lambda x: x * 6)
+    #df['T'] = df['T'].apply(lambda x: x * 0.1)
+    #df['T'] = df['T'].map('{:,.1f}'.format)
+    #df['DR'] = df['DR'].apply(lambda x: x * 6)
 
     return disclaimer, stations, legend, df
 
-
-disclaimer, stations, legend, df = getHourlyTempAndDownfallForStation(stations=[260])
+#Station 375 is Volkel Voor Gennep
+disclaimer, stations, legend, df = getHourlyTempAndDownfallForStation(stations=[375])
 # print(df.disclaimer)
 # print(df.stations)
 print(legend)
 print(df)
+
+file = open("legend.txt", "w")
+file.write(str(legend))
+file.close()
+file = open("Disclaimer.txt", "w")
+file.write(str(disclaimer))
+file.close()
+
+
 df.to_csv(r'Export_DataFrame.csv')
+df.to_json("WeatherData.json")
+
