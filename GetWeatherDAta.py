@@ -11,7 +11,7 @@ file.close()
 requiredTimes = json.loads(test)
 
 
-def getHourlyTempAndDownfallForStation(stations: list, start="2019063000", end="2019123123", inseason=False):
+def getHourlyTempAndDownfallForStation(stations: list, start="", end="", inseason=False):
     variables = ["ALL"]
     url = "http://projects.knmi.nl/klimatologie/uurgegevens/getdata_uur.cgi"
     params = {
@@ -45,8 +45,9 @@ def getHourlyTempAndDownfallForStation(stations: list, start="2019063000", end="
 
     return disclaimer, stations, legend, df
 
-#Station 375 is Volkel Voor Gennep
-disclaimer, stations, legend, df = getHourlyTempAndDownfallForStation(stations=[375])
+#Station 375 is Volkel Voor Gennep -> https://www.knmi.nl/nederland-nu/klimatologie/daggegevens hier vind je een lijst van stations
+#Start en stop tijd zijn opgedeelt in YYYYMMDDHH. Ze staan nu goed om de gehele periode van de dataset te betreffen.
+disclaimer, stations, legend, df = getHourlyTempAndDownfallForStation(stations=[375],start="2019063000",end="2019123123")
 # print(df.disclaimer)
 # print(df.stations)
 print(legend)
